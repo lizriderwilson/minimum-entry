@@ -1,0 +1,1 @@
+Rails.application.config.session_store :cookie_store, key: "_minimum_entry", domain: "localhost:3000"
