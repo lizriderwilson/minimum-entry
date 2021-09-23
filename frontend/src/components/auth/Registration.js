@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class Registration extends Component {
   constructor(props) {
@@ -17,32 +16,14 @@ class Registration extends Component {
     event.preventDefault();
     const { username, email, password, password_confirmation, bio } = this.state;
 
-    axios.post("http://localhost:3001/api/v1/users", {
-      user: {
-        username: username,
-        email: email,
-        password: password,
-        password_confirmation: password_confirmation,
-        bio: bio
-      }
-    }, 
-      {withCredentials: true}
-    ).then(response => {
-        if (response.data.status === 'created') {
-          this.props.handleSuccessfulAuth(response.data)
-        } // else update state with error and render to page
-      }).catch(error => {
-        console.log("registration error", error);
-      })
-
-    /*fetch("http://localhost:3001/api/v1/users", {
+    fetch("http://localhost:3001/api/v1/users", {
       method: "POST",
+      mode: "cors",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-
       },
-      //credentials: 'include',
       body: JSON.stringify({
         user: {
           username: username,
@@ -53,16 +34,16 @@ class Registration extends Component {
         },
       }),
     })
-      .then(response => { console.log(response)
-        //if (response.status === 'created') {
-          //this.props.handleSucce(response.data)
-    
-        //}
+      .then(response => response.json())
+      .then(r => {
+        console.log(r)
+        if (r.status === 'created') {
+          this.props.handleSuccessfulAuth(r)
+        }
       })
-      //.then(console.log);
       .catch(error => {
         console.log("registration error", error);
-      })*/
+      })
   }
 
   handleChange = (event) => {
