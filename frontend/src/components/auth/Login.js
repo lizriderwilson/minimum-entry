@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class Login extends Component {
   constructor(props) {
@@ -14,19 +13,29 @@ class Login extends Component {
     event.preventDefault();
     const { username, password } = this.state;
 
-    axios.post("http://localhost:3001/api/v1/login", {
-      user: {
-        username: username,
-        password: password
-      }
-    }, 
-      {withCredentials: true}
-    ).then(response => {
-          console.log(response.data)
-        if (response.data.logged_in === 'true') {
-          this.props.handleSuccessfulAuth(response.data)
-        } // else update state with error and render to page
-      }).catch(error => {
+    fetch("http://localhost:3001/api/v1/login", {
+      method: "POST",
+      mode: "cors",
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        user: {
+          username: username,
+          password: password,
+        },
+      }),
+    })
+      .then(response => response.json())
+      .then(r => {
+        console.log(r)
+        if (r.logged_in === 'true') {
+          this.props.handleSuccessfulAuth(r)
+        }
+      })
+      .catch(error => {
         console.log("registration error", error);
       })
   }
